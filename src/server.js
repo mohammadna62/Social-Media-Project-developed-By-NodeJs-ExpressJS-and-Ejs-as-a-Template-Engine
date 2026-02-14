@@ -9,9 +9,9 @@ function startServer() {
 
 function run(){
     startServer()
-    // Conect To Database()
     //  
 }
 
+//  **** notie : nodemon package run directly server.js from packahe.kson and "main": "./src/server.js",
 
 run()
