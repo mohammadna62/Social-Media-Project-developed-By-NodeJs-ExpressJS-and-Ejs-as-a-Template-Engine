@@ -2,12 +2,12 @@ const app = require("./app");
 const { default: mongoose } = require("mongoose");
 const dotenv = require("dotenv");
 
-//* Load ENV
+//! Load ENV
 const productionMode = process.env.NODE_ENV === "production";
 if (!productionMode) {
   dotenv.config();
 }
-//* Database Connection
+//! Database Connection
 async function connectToDB() {
   try {
     await mongoose.connect(process.env.MONGO_URI)
@@ -15,7 +15,7 @@ async function connectToDB() {
     
   } catch (err) {
     console.error(`Error in Datebase Connection -->  ${err}`);
-    process.exit(1); // this code cuase the poroject has stopped
+    process.exit(1); //! this code cuase the poroject has stopped
   }
 }
 
@@ -33,6 +33,6 @@ async function run() {
   await connectToDB();
 }
 
-//  **** notie : nodemon package run directly server.js from packahe.kson and "main": "./src/server.js",
+//! notie : nodemon package run directly server.js from packahe.Json and "main": "./src/server.js" in package.json,
 
 run();
