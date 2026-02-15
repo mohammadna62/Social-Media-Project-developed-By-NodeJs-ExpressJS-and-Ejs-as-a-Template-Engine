@@ -15,7 +15,7 @@ async function connectToDB() {
     
   } catch (err) {
     console.error(`Error in Datebase Connection -->  ${err}`);
-    process.exit(1); //! this code cuase the poroject has stopped
+    process.exit(1); //* this code cuase the poroject has stopped
   }
 }
 

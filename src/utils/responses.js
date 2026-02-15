@@ -1,5 +1,5 @@
 //! Helper Function to Format Success Response
-const successResponse = (res, statussCode = 200, data) => {
+ const successResponse = (res, statussCode = 200, data) => {
   return res
     .status(statussCode)
     .json({ status: statussCode, success: true, data });
