@@ -1,8 +1,8 @@
-const { log } = require("console");
 const express = require("express");
 const path = require("path");
 const { setHeaders } = require("./middlewares/headers");
 const { errorHandler } = require("./middlewares/errorHandler");
+const authRoutes = require("./modules/auth/auth.routes")
 const app = express();
 
 
@@ -27,6 +27,7 @@ app.set("views", path.join(__dirname, "views"));
 app.get("/", (req, res) => {
   return res.render("index");
 });
+app.post("/auth",authRoutes)
 
 //! 404 Error Handler
 app.use((req, res) => {
