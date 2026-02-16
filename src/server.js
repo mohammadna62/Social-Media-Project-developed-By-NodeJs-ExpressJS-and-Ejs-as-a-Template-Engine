@@ -1,3 +1,10 @@
+process.noDeprecation = true;
+
+// یا فقط برای DEP0044
+process.on('warning', (warning) => {
+  if (warning.code === 'DEP0044') return;
+  console.warn(warning.name, warning.message);
+});
 const app = require("./app");
 const { default: mongoose } = require("mongoose");
 const dotenv = require("dotenv");

@@ -27,7 +27,9 @@ exports.register = async (req, res, next) => {
     });
 
     if (isExistUser) {
-      return errorResponse(res, 400, "Email or username already exist !!");
+       req.flash("error","Email or username already exist !!")
+       return res.redirect("/auth/register")
+     // return errorResponse(res, 400, "Email or username already exist !!");
     }
 
     const isFirstUser = (await UserModel.countDocuments()) === 0;
@@ -36,7 +38,7 @@ exports.register = async (req, res, next) => {
       role = "ADMIN";
     }
 
-    user = new UserModel({ email, username, password, name });
+    user = new UserModel({ email, username, password, name ,role});
     user = await user.save();
 
     return successResponse(res, 201, {
