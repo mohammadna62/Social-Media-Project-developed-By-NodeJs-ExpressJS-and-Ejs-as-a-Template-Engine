@@ -1,4 +1,5 @@
 const { errorResponse, successResponse } = require("../../utils/responses");
+const jwt = require("jsonwebtoken")
 const UserModel = require("./../../models/User");
 const { registerValidationSchema } = require("./auth.validator");
 
@@ -40,12 +41,18 @@ exports.register = async (req, res, next) => {
 
     user = new UserModel({ email, username, password, name ,role});
     user = await user.save();
-     
+
+    const accessToken = jwt.sign({ userID: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "30day",
+    });
+
+    res.cookie("token", accessToken, { maxAge: 900_000, httpOnly: true });
     req.flash("success","Singned up was successfully")
     return res.redirect("/auth/register")
     // return successResponse(res, 201, {
     //   message: "User created successfully :))",
     //   user: { ...user.toObject(), password: undefined },
+    // accessToken
     // });
   } catch (err) {
     next(err);
