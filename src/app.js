@@ -1,11 +1,11 @@
 const express = require("express");
 const path = require("path");
+
 const { setHeaders } = require("./middlewares/headers");
 const { errorHandler } = require("./middlewares/errorHandler");
-const authRoutes = require("./modules/auth/auth.routes")
+const authRoutes = require("./modules/auth/auth.routes");
+
 const app = express();
-
-
 //! BodyParser
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.json({ limit: "50mb" }));
@@ -27,7 +27,7 @@ app.set("views", path.join(__dirname, "views"));
 app.get("/", (req, res) => {
   return res.render("index");
 });
-app.post("/auth",authRoutes)
+app.use("/auth", authRoutes);
 
 //! 404 Error Handler
 app.use((req, res) => {

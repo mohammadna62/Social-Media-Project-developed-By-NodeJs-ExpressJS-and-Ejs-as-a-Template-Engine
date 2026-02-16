@@ -34,7 +34,7 @@ const schema = new mongoose.Schema(
       enum: ["USER", "ADMIN"],
       default: "USER",
     },
-    Private: {
+    private: {
       type: Boolean,
       default: false,
     },
@@ -43,16 +43,17 @@ const schema = new mongoose.Schema(
       default: false,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
-schema.pre("save", async function (next) {
+
+schema.pre("save", async function () {
   try {
     this.password = await bcrypt.hash(this.password, 10);
-    next();
   } catch (err) {
-    next(err);
+   throw err;
   }
 });
+
 
 const model = mongoose.model("User", schema);
 

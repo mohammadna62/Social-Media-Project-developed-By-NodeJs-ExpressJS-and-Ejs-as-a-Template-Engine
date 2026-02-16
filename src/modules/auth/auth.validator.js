@@ -1,6 +1,6 @@
 const yup = require("yup");
 
-exports.registerValidationSchema = yup.opject({
+exports.registerValidationSchema = yup.object({
   email: yup
     .string()
     .email("Please Enter A valid Email")

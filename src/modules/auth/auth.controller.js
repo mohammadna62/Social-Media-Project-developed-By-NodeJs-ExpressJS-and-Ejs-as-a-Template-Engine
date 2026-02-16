@@ -1,32 +1,47 @@
-const UserModel = require("../../models/User");
 const { errorResponse, successResponse } = require("../../utils/responses");
+const UserModel = require("./../../models/User");
 const { registerValidationSchema } = require("./auth.validator");
-exports.register = async (req, res) => {
+
+exports.showRegisterView = async (req, res) => {
+  return res.render("auth/register");
+};
+
+exports.register = async (req, res, next) => {
   try {
     const { email, username, name, password } = req.body;
-    await registerValidationSchema.validate({
-      email,
-      username,
-      name,
-      password,
-    },{abortEarly:false,});
+
+    await registerValidationSchema.validate(
+      {
+        email,
+        username,
+        name,
+        password,
+      },
+      {
+        abortEarly: false,
+      }
+    );
+
     const isExistUser = await UserModel.findOne({
       $or: [{ username }, { email }],
     });
 
     if (isExistUser) {
-      return errorResponse(res, 400, "Email or Username Already Exist");
+      return errorResponse(res, 400, "Email or username already exist !!");
     }
+
     const isFirstUser = (await UserModel.countDocuments()) === 0;
     let role = "USER";
     if (isFirstUser) {
       role = "ADMIN";
     }
-    const user = new UserModel({ email, username, password, name });
+
+    user = new UserModel({ email, username, password, name });
     user = await user.save();
+
     return successResponse(res, 201, {
-      message: "User Created Successfully",
-      user: { ...user, password: undefined },
+      message: "User created successfully :))",
+      user: { ...user.toObject(), password: undefined },
     });
   } catch (err) {
     next(err);
