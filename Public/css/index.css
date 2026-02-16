@@ -1399,10 +1399,14 @@ button {
     z-index: 60;
 }
 
-
+.swal-footer {
+   display:flex;
+   justify-content: center;
+}
 
 :root {
     --main-color: rgb(129, 66, 174);
     --secondary-color: rgb(4, 125, 229) !important;
     --indigo-color: #6060db;
 }
+

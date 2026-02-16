@@ -27,7 +27,7 @@ exports.register = async (req, res, next) => {
     });
 
     if (isExistUser) {
-       req.flash("error","Email or username already exist !!")
+       req.flash("error","Email or username already exist")
        return res.redirect("/auth/register")
      // return errorResponse(res, 400, "Email or username already exist !!");
     }
@@ -40,11 +40,13 @@ exports.register = async (req, res, next) => {
 
     user = new UserModel({ email, username, password, name ,role});
     user = await user.save();
-
-    return successResponse(res, 201, {
-      message: "User created successfully :))",
-      user: { ...user.toObject(), password: undefined },
-    });
+     
+    req.flash("success","Singned up was successfully")
+    return res.redirect("/auth/register")
+    // return successResponse(res, 201, {
+    //   message: "User created successfully :))",
+    //   user: { ...user.toObject(), password: undefined },
+    // });
   } catch (err) {
     next(err);
   }
