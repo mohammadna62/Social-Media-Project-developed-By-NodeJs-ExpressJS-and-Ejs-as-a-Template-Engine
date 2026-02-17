@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
-const { v$: uuidv4 } = require("uuid");
+const { v4: uuidv4 } = require("uuid");
 
 const schema = new mongoose.Schema({
   user: {
-    type: mongoose.Schema.Types.ObjectId,
-    rer: "User",
-    required: true,
-  },
+     type: mongoose.Schema.Types.ObjectId,
+     ref: "User",
+     required: true,
+   },
   token: {
     type: String,
     required: true,
@@ -23,7 +23,7 @@ schema.statics.createToken = async (user) => {
   const refreshToken = uuidv4();
   const refreshDocument = new model({
     token: refreshToken,
-    user: user_id,
+    user: user._id,
     expire: new Date(Date.now() + expireInDays * 24 * 60 * 60 * 1000),
   });
   await refreshDocument.save();
