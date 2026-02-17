@@ -1,31 +1,43 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const { v$: uuidv4 } = require("uuid");
 
+const schema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    rer: "User",
+    required: true,
+  },
+  token: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  expire: {
+    type: Date,
+    required: true,
+  },
+});
 
+schema.statics.createToken = async (user) => {
+  const expireInDays = +process.env.REFRESH_TOKEN_EXPIRE;
+  const refreshToken = uuidv4();
+  const refreshDocument = new model({
+    token: refreshToken,
+    user: user_id,
+    expire: new Date(Date.now() + expireInDays * 24 * 60 * 60 * 1000),
+  });
+  await refreshDocument.save();
+  return refreshToken;
+};
+schema.statics.verifyToken = async (token) => {
+  const refreshTokenDocument = await model.findOne({ token });
+  if (refreshTokenDocument && refreshTokenDocument.expire >= Date.now()) {
+    return refreshTokenDocument.user;
+  } else {
+    return null;
+  }
+};
 
-const  schema = new mongoose.Schema({
-    user:{
-        type: mongoose.Schema.Types.ObjectId,
-        rer:"User",
-        required : true,
-    },
-    token:{
-        type: String,
-        required: true,
-        unique : true
-    },
-    expire:{
-        type : Date,
-        required : true,
-    }
-})
+const model = mongoose.model("RefreshToken", schema);
 
-schema.statics.createToken = async (user)=>{
-
-}
-schema.statics.verifyToken = async (user)=>{
-
-}
-
-const model = mongoose.model("Token",schema)
-
-module.exports = model
+module.exports = model;

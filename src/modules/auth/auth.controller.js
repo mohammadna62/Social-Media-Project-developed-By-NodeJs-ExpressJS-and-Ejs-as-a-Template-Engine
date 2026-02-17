@@ -45,7 +45,7 @@ exports.register = async (req, res, next) => {
     const accessToken = jwt.sign({ userID: user._id }, process.env.JWT_SECRET, {
       expiresIn: "30day",
     });
-
+     
     res.cookie("token", accessToken, { maxAge: 900_000, httpOnly: true });
     req.flash("success","Singned up was successfully")
     return res.redirect("/auth/register")
