@@ -1,8 +1,10 @@
 const { errorResponse, successResponse } = require("../../utils/responses");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs")
 const UserModel = require("./../../models/User");
 const { registerValidationSchema } = require("./auth.validator");
-const refreshTokenModel = require("./../../models/RefreshToken");
+const RefreshTokenModel = require("./../../models/RefreshToken");
+const { param } = require("./auth.routes");
 
 exports.showRegisterView = async (req, res) => {
   return res.render("auth/register");
@@ -47,7 +49,10 @@ exports.register = async (req, res, next) => {
       expiresIn: "30day",
     });
     const refreshToken = await refreshTokenModel.createToken(user);
-    res.cookie("accsess-token", accessToken, { maxAge: 900_000, httpOnly: true });
+    res.cookie("accsess-token", accessToken, {
+      maxAge: 900_000,
+      httpOnly: true,
+    });
     res.cookie("refresh-token", refreshToken, {
       maxAge: 900_000,
       httpOnly: true,
@@ -62,4 +67,47 @@ exports.register = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+exports.showLoginView = async (req, res) => {
+  return res.render("auth/login");
+};
+
+exports.login = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  // Validation ✅
+
+  const user = await UserModel.findOne({ email }).lean();
+
+  if (!user) {
+    req.flash("error", "User not found !!");
+    return res.redirect("/auth/login");
+  }
+
+  const isPasswordMatch = await bcrypt.compare(password, user.password);
+  if (!isPasswordMatch) {
+    req.flash("error", "Invalid Email Or Password !!");
+    return res.redirect("/auth/login");
+  }
+
+  const accessToken = jwt.sign({ userID: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "30day",
+  });
+
+  const refreshToken = await RefreshTokenModel.createToken(user);
+
+  res.cookie("access-token", accessToken, {
+    maxAge: 900_000,
+    httpOnly: true,
+  });
+
+  res.cookie("refresh-token", refreshToken, {
+    maxAge: 900_000,
+    httpOnly: true,
+  });
+
+  req.flash("success", "Signed In was successfully");
+
+  return res.redirect("/auth/login");
 };
