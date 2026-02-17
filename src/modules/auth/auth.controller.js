@@ -1,8 +1,11 @@
 const { errorResponse, successResponse } = require("../../utils/responses");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcryptjs");
 const UserModel = require("./../../models/User");
-const { registerValidationSchema } = require("./auth.validator");
+const {
+  registerValidationSchema,
+  loginValidationSchema,
+} = require("./auth.validator");
 const RefreshTokenModel = require("./../../models/RefreshToken");
 const { param } = require("./auth.routes");
 
@@ -74,40 +77,52 @@ exports.showLoginView = async (req, res) => {
 };
 
 exports.login = async (req, res, next) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  // Validation ✅
+    await loginValidationSchema.validate(
+      {
+        email,
+        password,
+      },
+      {
+        abortEarly: false,
+      },
+    );
 
-  const user = await UserModel.findOne({ email }).lean();
+    const user = await UserModel.findOne({ email }).lean();
 
-  if (!user) {
-    req.flash("error", "User not found !!");
+    if (!user) {
+      req.flash("error", "User not found !!");
+      return res.redirect("/auth/login");
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      req.flash("error", "Invalid Email Or Password !!");
+      return res.redirect("/auth/login");
+    }
+
+    const accessToken = jwt.sign({ userID: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "30day",
+    });
+
+    const refreshToken = await RefreshTokenModel.createToken(user);
+
+    res.cookie("access-token", accessToken, {
+      maxAge: 900_000,
+      httpOnly: true,
+    });
+
+    res.cookie("refresh-token", refreshToken, {
+      maxAge: 900_000,
+      httpOnly: true,
+    });
+
+    req.flash("success", "Signed In was successfully");
+
     return res.redirect("/auth/login");
+  } catch (err) {
+    next(err)
   }
-
-  const isPasswordMatch = await bcrypt.compare(password, user.password);
-  if (!isPasswordMatch) {
-    req.flash("error", "Invalid Email Or Password !!");
-    return res.redirect("/auth/login");
-  }
-
-  const accessToken = jwt.sign({ userID: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "30day",
-  });
-
-  const refreshToken = await RefreshTokenModel.createToken(user);
-
-  res.cookie("access-token", accessToken, {
-    maxAge: 900_000,
-    httpOnly: true,
-  });
-
-  res.cookie("refresh-token", refreshToken, {
-    maxAge: 900_000,
-    httpOnly: true,
-  });
-
-  req.flash("success", "Signed In was successfully");
-
-  return res.redirect("/auth/login");
 };

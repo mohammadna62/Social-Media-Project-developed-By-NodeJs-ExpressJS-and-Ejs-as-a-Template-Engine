@@ -15,8 +15,20 @@ exports.registerValidationSchema = yup.object({
     .min(3, "Name must be at least 3 chars long")
     .max(50, " Name Can Not be more than 50 chars")
     .required("Name is Requierd"),
-    name: yup
+    password: yup
     .string()
     .min(8, "Password must be at least 8 chars long")
     .required("Name is Requierd"),
 });
+
+
+exports.loginValidationSchema = yup.object({
+  email:yup
+    .string()
+    .email("Please Enter A valid Email")
+    .required("Email is Requierd"),
+    password: yup
+    .string()
+    .min(8, "Password must be at least 8 chars long")
+    .required("Name is Requierd"),
+})
