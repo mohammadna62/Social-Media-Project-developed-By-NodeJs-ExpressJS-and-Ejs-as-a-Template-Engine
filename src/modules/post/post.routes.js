@@ -1,18 +1,12 @@
-const express = require("express")
-const controller = require("./post.controller")
+const express = require("express");
+const controller = require("./post.controller");
+const auth = require("./../../middlewares/auth");
 
-const router = express.Router()
+const router = express.Router();
 
-router.route("/").get(controller.showPostUploadView).post(controller.createPost)
+router
+  .route("/")
+  .get(auth,controller.showPostUploadView)
+  .post(auth,controller.createPost);
 
-
-
-
-
-
-
-
-
-
-
-module.exports = router
+module.exports = router;
