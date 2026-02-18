@@ -110,7 +110,7 @@ exports.login = async (req, res, next) => {
     const refreshToken = await RefreshTokenModel.createToken(user);
 
     res.cookie("access-token", accessToken, {
-      maxAge: 900_000,
+      maxAge: 900_000_000,
       httpOnly: true,
     });
 
