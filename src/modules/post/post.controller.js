@@ -7,3 +7,6 @@ exports.showPostUploadView = async (req , res)=>{
 
 
 
+exports.createPost= async(req , res, next)=>{
+
+}
