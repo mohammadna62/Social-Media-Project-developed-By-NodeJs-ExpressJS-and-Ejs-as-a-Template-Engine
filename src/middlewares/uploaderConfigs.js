@@ -20,7 +20,7 @@ exports.multerStorage = (destination, allowedTypes = /jpeg|jpg|png|webp/) => {
   });
   const fileFilter = function (req, file, cb) {
     //* Allow Extension
-    if (allowedTypes.test(file.mimeTypes)) {
+    if (allowedTypes.test(file.mimetype)) {
       cb(null, true);
     } else {
       cb(new Error("File Type Not Allow"));

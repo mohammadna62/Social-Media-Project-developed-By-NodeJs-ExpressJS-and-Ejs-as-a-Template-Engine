@@ -1,5 +1,5 @@
 const PostModel = require("./../../models/Post");
-const createPostValidator = require("./post.validators");
+const {createPostValidator} = require("./post.validators");
 
 exports.showPostUploadView = async (req, res) => {
   return res.render("post/upload");
@@ -14,7 +14,7 @@ exports.createPost = async (req, res, next) => {
       req.flash("error", "Media is required");
       return res.render("post/upload");
     }
-    await createPostValidator.validation(
+    await createPostValidator.validate(
       { description },
       { abortEarly: false },
     );
