@@ -8,7 +8,7 @@ exports.multerStorage = (destination, allowedTypes = /jpeg|jpg|png|webp/) => {
     fs.mkdirSync(destination);
   }
   //* Multer Configs
-  const storge = multer.diskStorage({
+  const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, destination);
     },
@@ -20,10 +20,10 @@ exports.multerStorage = (destination, allowedTypes = /jpeg|jpg|png|webp/) => {
   });
   const fileFilter = function (req, file, cb) {
     //* Allow Extension
-    if(allowedTypes.test(file.mimeTypes)){
-       cb(null, true)
-    }else{
-        cb(new Error("File Type Not Allow"))
+    if (allowedTypes.test(file.mimeTypes)) {
+      cb(null, true);
+    } else {
+      cb(new Error("File Type Not Allow"));
     }
   };
   const uploader = multer({
@@ -31,7 +31,7 @@ exports.multerStorage = (destination, allowedTypes = /jpeg|jpg|png|webp/) => {
     limits: {
       fileSize: 512_000_000, //5 mB limit
     },
-    fileFilter,
+    fileFilter, // we use same name that no need to use :
   });
-  return upload
+  return uploader;
 };
