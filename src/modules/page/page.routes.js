@@ -6,6 +6,8 @@ const router = express.Router();
 
 
 router.route('/:pageID').get(auth,controller.getGage)
+router.route('/:pageID/follow').post(auth,controller.follow)
+router.route('/:pageID/unfollow').post(auth,controller.unfollow)
 
 
 
