@@ -51,7 +51,7 @@ exports.register = async (req, res, next) => {
     const accessToken = jwt.sign({ userID: user._id }, process.env.JWT_SECRET, {
       expiresIn: "30day",
     });
-    const refreshToken = await refreshTokenModel.createToken(user);
+    const refreshToken = await RefreshTokenModel.createToken(user);
     res.cookie("accsess-token", accessToken, {
       maxAge: 900_000,
       httpOnly: true,

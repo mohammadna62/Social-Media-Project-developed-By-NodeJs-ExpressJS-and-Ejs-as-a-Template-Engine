@@ -7,7 +7,9 @@ const cookieParser = require("cookie-parser")
 const { setHeaders } = require("./middlewares/headers");
 const { errorHandler } = require("./middlewares/errorHandler");
 const authRoutes = require("./modules/auth/auth.routes");
-const postsRouters = require("./modules/post/post.routes");
+const postsRoutes = require("./modules/post/post.routes");
+const pageRoutes = require("./modules/page/page.routes");
+
 
 const app = express();
 //! BodyParser
@@ -43,7 +45,8 @@ app.get("/", (req, res) => {
   return res.render("index");
 });
 app.use("/auth", authRoutes);
-app.use("/posts", postsRouters);
+app.use("/posts", postsRoutes);
+app.use("/pages", pageRoutes);
 
 //! 404 Error Handler
 app.use((req, res) => {

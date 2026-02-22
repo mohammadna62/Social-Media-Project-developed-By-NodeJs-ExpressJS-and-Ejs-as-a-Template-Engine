@@ -147,7 +147,14 @@
 
     <!-- Scripts -->
     <script src="/src/Functions/index.js"></script>
-
+   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        if("<%= locals.messages.error %>"){
+             swal("<%= locals.messages.error %>", "You clicked the button!", "error")
+        }else if("<%= locals.messages.success %>"){
+            swal("<%= locals.messages.success %>😍", "You clicked the button!", "success")
+        }
+    </script>
 </body>
 
 </html>

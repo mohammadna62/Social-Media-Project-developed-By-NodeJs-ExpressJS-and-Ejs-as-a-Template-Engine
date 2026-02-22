@@ -18,7 +18,7 @@ exports.createPost = async (req, res, next) => {
       { description },
       { abortEarly: false },
     );
-    const mediaUrlPath = `posts/${req.file.filename}`;
+    const mediaUrlPath = `images/posts/${req.file.filename}`;
 
     //* Create New Post
     const post = new PostModel({
