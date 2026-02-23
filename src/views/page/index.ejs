@@ -113,13 +113,13 @@
                     />
                   </svg>
 
-                  
+                 
                 </div>
                 <!-- Profile Followers/Following count -->
                 <div class="flex items center gap-4 mt-4">
                   <div class="flex items center cursor-pointer gap-1">
                     <span class="count">49</span>
-                    <span class="text-gray-700">Followers</span>
+                    <span class="text-gray-700 followers">Followers</span>
                   </div>
                   <div
                     id="followings"
@@ -467,7 +467,60 @@
 
     <!-- Modal -->
     <section id="modal" class="modal-screen">
-      <section id="modal-card"></section>
+      <section id="modal-card">
+        <header
+          id="modal-header"
+          class="w-full pb-4 flex items-center justify-between"
+        >
+          <div></div>
+          <div class="pl-5">Followers (<%= followers.length %>)</div>
+          <button class="max-w-max flex-center close-button">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </header>
+        <main class="mt-2">
+          <% if (followers.length > 0) { %> <% followers.forEach(follower => {
+          %>
+          <article class="following-card">
+            <div class="flex items-center gap-1">
+              <div class="flex items-center gap-2">
+                <div class="w-12 h-12 rounded-full overflow-hidden">
+                  <img
+                    src="/images/profile-1.jpg"
+                    class="w-full object-cover h-full"
+                    alt=""
+                  />
+                </div>
+                <div>
+                  <h6 class=""><%= follower.name %></h6>
+                  <p class="text-sm font-Poppins-Light text-gray-600">
+                    @<%= follower.username %>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button class="follow-button text-xs">Follow</button>
+            </div>
+          </article>
+          <% }) %> <% } else { %>
+          <h1 style="text-align: center">You can't access to followers</h1>
+          <% } %>
+        </main>
+      </section>
     </section>
 
     <!-- Scripts -->
@@ -484,9 +537,22 @@
         swal({
           title: "<%= locals.messages.success %>",
           icon: "success",
-          buttons: "Huraaa 😍",
+          buttons: "Done 😍",
         });
       }
+
+      const followersSpan = document.querySelector(".followers");
+      console.log(followersSpan);
+      followersSpan.addEventListener("click", () => {
+        const followersModal = document.querySelector(".modal-screen");
+        const followerModalCloseBtn = document.querySelector(".close-button");
+
+        followersModal.classList.add("visible");
+
+        followerModalCloseBtn.addEventListener("click", () => {
+          followersModal.classList.remove("visible");
+        });
+      });
     </script>
   </body>
 </html>

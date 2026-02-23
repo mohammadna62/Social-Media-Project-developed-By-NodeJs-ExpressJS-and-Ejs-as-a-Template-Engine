@@ -16,11 +16,18 @@ exports.getGage = async (req, res, next) => {
       return res.render("page/index", {
         followed: Boolean(followed),
         pageID,
+        followers: [],
       });
     }
+    let followers = await FollowModel.find({ following: pageID }).populate(
+      "follower",
+      "name username",
+    );
+    followers = followers.map((item) => item.follower);
     return res.render("page/index", {
       followed: Boolean(followed),
       pageID,
+      followers,
     });
   } catch (err) {
     next(err);
