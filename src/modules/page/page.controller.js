@@ -11,12 +11,18 @@ exports.getGage = async (req, res, next) => {
       follower: user._id,
       following: pageID,
     });
+    const page = await UserModel.findOne(
+      { _id: pageID },
+      "name username biography isVerified",
+    ).lean();
+     
     if (!hasAccess) {
       req.flash("error", "Folow Page To Show Content");
       return res.render("page/index", {
         followed: Boolean(followed),
         pageID,
         followers: [],
+        page,
       });
     }
     let followers = await FollowModel.find({ following: pageID }).populate(
@@ -28,6 +34,7 @@ exports.getGage = async (req, res, next) => {
       followed: Boolean(followed),
       pageID,
       followers,
+      page,
     });
   } catch (err) {
     next(err);
