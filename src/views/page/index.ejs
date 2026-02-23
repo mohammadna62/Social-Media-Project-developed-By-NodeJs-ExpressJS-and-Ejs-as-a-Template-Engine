@@ -125,7 +125,7 @@
                     id="followings"
                     class="flex items-center cursor-pointer gap-1"
                   >
-                    <span class="count">4</span>
+                    <span class="count"><%= followings.length %></span>
                     <span class="text-gray-700 followings">Following</span>
                   </div>
                 </div>
@@ -458,7 +458,7 @@
                     />
                   </svg>
                 </span>
-                <span> 🌞 </span>
+                <span>  🌞 </span>
               </a>
             </article>
             <article class="p-3">
@@ -609,7 +609,7 @@
           </button>
         </header>
         <main class="mt-2">
-          <% if (followers.length > 0) { %> <% followers.forEach(follower => { %>
+          <% if (hasAccess) { %> <% followers.forEach(follower => { %>
           <article class="following-card">
             <div class="flex items-center gap-1">
               <div class="flex items-center gap-2">
@@ -647,7 +647,7 @@
           class="w-full pb-4 flex items-center justify-between"
         >
           <div></div>
-          <div class="pl-5">Followings</div>
+          <div class="pl-5">Followings (<%= followings.length %>)</div>
           <button class="max-w-max flex-center followings-close-button">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -666,29 +666,39 @@
           </button>
         </header>
         <main class="mt-2">
-          
-          <article class="following-card">
-            <div class="flex items-center gap-1">
-              <div class="flex items-center gap-2">
-                <div class="w-12 h-12 rounded-full overflow-hidden">
-                  <img
-                    src="/images/profile-1.jpg"
-                    class="w-full object-cover h-full"
-                    alt=""
-                  />
+
+          <% if(hasAccess) { %>
+            <% followings.forEach(following => { %>
+
+              <article class="following-card">
+                <div class="flex items-center gap-1">
+                  <div class="flex items-center gap-2">
+                    <div class="w-12 h-12 rounded-full overflow-hidden">
+                      <img
+                        src="/images/profile-1.jpg"
+                        class="w-full object-cover h-full"
+                        alt=""
+                      />
+                    </div>
+                    <div>
+                      <h6 class=""><%= following.name %></h6>
+                      <p class="text-sm font-Poppins-Light text-gray-600">
+                        @<%= following.username %>
+                      </p>
+                    </div>
+                  </div>
                 </div>
                 <div>
-                  <h6 class="">Name</h6>
-                  <p class="text-sm font-Poppins-Light text-gray-600">
-                    @ID
-                  </p>
+                  <button class="follow-button text-xs">Follow</button>
                 </div>
-              </div>
-            </div>
-            <div>
-              <button class="follow-button text-xs">Follow</button>
-            </div>
-          </article>
+              </article>
+
+            <% }) %>
+          <% } else { %>            
+            <h1 style="text-align: center">You can't access to followers</h1>
+          <% } %>
+          
+          
           
         </main>
       </section>
