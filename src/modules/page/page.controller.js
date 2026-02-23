@@ -35,10 +35,10 @@ exports.follow = async (req, res, next) => {
       req.flash("error", "Page NOt Found To Follow");
       return res.redirect(`/pages/${pageID}`);
     }
-     if(user._id.toString()=== pageID){
+    if (user._id.toString() === pageID) {
       req.flash("error", "You Can Not Follow Yourself");
       return res.redirect(`/pages/${pageID}`);
-     }
+    }
     const existingFollow = await FollowModel.findOne({
       follower: user._id,
       following: pageID,
@@ -48,16 +48,12 @@ exports.follow = async (req, res, next) => {
       return res.redirect(`/pages/${pageID}`);
     }
     await FollowModel.create({
-      follower :user._id ,
-      following:pageID,
-    })
+      follower: user._id,
+      following: pageID,
+    });
 
-    
     req.flash("success", "Page Followed Successfully");
-      return res.redirect(`/pages/${pageID}`);
-
-
-
+    return res.redirect(`/pages/${pageID}`);
   } catch (err) {
     next(err);
   }
@@ -65,7 +61,18 @@ exports.follow = async (req, res, next) => {
 
 exports.unfollow = async (req, res, next) => {
   try {
-    return res.json({ message: " User Unfollwed Successfully" });
+    const user = req.user;
+    const { pageID } = req.params;
+    const unFollowPage = await FollowModel.findOneAndDelete({
+      follower: user._id,
+      following: pageID,
+    });
+    if (!unFollowPage) {
+      req.flash("error", "You Did Not Foolow This Page Before");
+      return res.redirect(`/pages/${pageID}`);
+    }
+    req.flash("success", "Page Unfollow Successfuly");
+    return res.redirect(`/pages/${pageID}`);
   } catch (err) {
     next(err);
   }
