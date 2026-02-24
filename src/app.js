@@ -9,6 +9,7 @@ const { errorHandler } = require("./middlewares/errorHandler");
 const authRoutes = require("./modules/auth/auth.routes");
 const postsRoutes = require("./modules/post/post.routes");
 const pageRoutes = require("./modules/page/page.routes");
+const userRoutes = require("./modules/user/user.routes");
 
 
 const app = express();
@@ -47,6 +48,7 @@ app.get("/", (req, res) => {
 app.use("/auth", authRoutes);
 app.use("/posts", postsRoutes);
 app.use("/pages", pageRoutes);
+app.use("/users", userRoutes);
 
 //! 404 Error Handler
 app.use((req, res) => {
