@@ -49,6 +49,7 @@ exports.getPage = async (req, res, next) => {
     const posts = await PostModel.find({ user: pageID })
       .sort({ _id: -1 })
       .populate("user", "name username");
+      const own = user._id.toString() === pageID
 
     return res.render("page/index", {
       followed: Boolean(followed),
@@ -57,6 +58,7 @@ exports.getPage = async (req, res, next) => {
       followers,
       followings,
       page,
+      own,
       posts,
     });
   } catch (err) {
