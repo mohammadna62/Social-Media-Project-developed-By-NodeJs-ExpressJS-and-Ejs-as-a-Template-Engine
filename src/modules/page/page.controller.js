@@ -1,6 +1,8 @@
 const hasAccessToPage = require("./../../utils/hasAccessToPage");
 const FollowModel = require("./../../models/Follow");
 const UserModel = require("./../../models/User");
+const PostModel = require("./../../models/Post");
+
 exports.getPage = async (req, res, next) => {
   try {
     const user = req.user;
@@ -14,10 +16,8 @@ exports.getPage = async (req, res, next) => {
 
     const page = await UserModel.findOne(
       { _id: pageID },
-      "name username biography isVerified"
+      "name username biography isVerified",
     ).lean();
-
-  
 
     if (!hasAccess) {
       req.flash("error", "Follow page to show content");
@@ -28,22 +28,27 @@ exports.getPage = async (req, res, next) => {
         followings: [],
         hasAccess: false,
         page,
+        posts: [],
       });
     }
 
     let followers = await FollowModel.find({ following: pageID }).populate(
       "follower",
-      "name username"
+      "name username",
     );
 
     followers = followers.map((item) => item.follower);
 
     let followings = await FollowModel.find({ follower: pageID }).populate(
       "following",
-      "name username"
+      "name username",
     );
 
     followings = followings.map((item) => item.following);
+
+    const posts = await PostModel.find({ user: pageID })
+      .sort({ _id: -1 })
+      .populate("user", "name username");
 
     return res.render("page/index", {
       followed: Boolean(followed),
@@ -52,6 +57,7 @@ exports.getPage = async (req, res, next) => {
       followers,
       followings,
       page,
+      posts,
     });
   } catch (err) {
     next(err);
