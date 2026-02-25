@@ -9,16 +9,16 @@ exports.showPageEditView = async (req, res) => {
 };
 exports.updateProfile = async (req, res, next) => {
   try {
-    const userId = req.user._id;
+    const userID = req.user._id;
     //Handler File Upload
     if (!req.file) {
       req.flash("error", "please Upload A profile Picture");
       return res.redirect("/users/edit-profile");
     }
     const { filename } = req.file;
-    const profilePath = `image/profiles/${filename}`;
+    const profilePath = `images/profiles/${filename}`;
     const user = await UserModel.findOneAndUpdate(
-      { _id: userId },
+      { _id: userID},
       { profilePicture: profilePath },
       { new: true }// return Updated user document
     );

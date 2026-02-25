@@ -16,7 +16,7 @@ exports.getPage = async (req, res, next) => {
 
     const page = await UserModel.findOne(
       { _id: pageID },
-      "name username biography isVerified",
+      "name username biography isVerified profilePicture",
     ).lean();
 
     if (!hasAccess) {
@@ -48,7 +48,7 @@ exports.getPage = async (req, res, next) => {
 
     const posts = await PostModel.find({ user: pageID })
       .sort({ _id: -1 })
-      .populate("user", "name username");
+      .populate("user", "name username profilePicture");
       const own = user._id.toString() === pageID
 
     return res.render("page/index", {
