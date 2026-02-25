@@ -37,3 +37,15 @@ exports.createPost = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.like = async (req, res) => {
+  
+};
+
+exports.dislike = async (req, res, next) => {
+  try {
+    return res.render("post/upload")
+  } catch (err) {
+    next(err);
+  }
+};

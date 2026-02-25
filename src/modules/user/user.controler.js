@@ -10,25 +10,55 @@ exports.showPageEditView = async (req, res) => {
 exports.updateProfile = async (req, res, next) => {
   try {
     const userID = req.user._id;
-    //Handler File Upload
-    if (!req.file) {
-      req.flash("error", "please Upload A profile Picture");
+    const { name, username, email, password } = req.body;
+
+    const repeatedUser = await UserModel.findOne({
+      _id: { $ne: userID },
+      $or: [{ username }, { email }],
+    });
+
+    if (repeatedUser) {
+      if (
+        username !== req.user.username &&
+        repeatedUser.username === username
+      ) {
+        req.flash("error", "Username Is Already Exist");
+        return res.redirect("/users/edit-profile");
+      }
+
+      if (email !== req.user.email && repeatedUser.email === email) {
+        req.flash("error", "Email Is Already Exist");
+        return res.redirect("/users/edit-profile");
+      }
+    }
+
+    const user = await UserModel.findById(userID);
+    if (!user) {
+      req.flash("error", "User Not Found");
       return res.redirect("/users/edit-profile");
     }
-    const { filename } = req.file;
-    const profilePath = `images/profiles/${filename}`;
-    const user = await UserModel.findOneAndUpdate(
-      { _id: userID},
-      { profilePicture: profilePath },
-      { new: true }// return Updated user document
-    );
-    if(!user){
-      req.flash("error", "User Not Found");
-    return res.redirect("/users/edit-profile");
+
+    if (!req.file && !user.profilePicture) {
+      req.flash("error", "Please upload a profile picture.");
+      return res.redirect("/users/edit-profile");
     }
-    req.flash("success", "Profile Picture Updated Successfully");
+
+    if (req.file) {
+      user.profilePicture = `images/profiles/${req.file.filename}`;
+    }
+
+    user.name = name;
+    user.username = username;
+    user.email = email;
+
+    if (password && password.trim() !== "") {
+      user.password = password;
+    }
+
+    await user.save();
+
+    req.flash("success", "Profile Updated Successfully");
     return res.redirect("/users/edit-profile");
-    
   } catch (err) {
     next(err);
   }
