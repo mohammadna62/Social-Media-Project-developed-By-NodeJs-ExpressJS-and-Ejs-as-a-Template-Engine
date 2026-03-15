@@ -123,7 +123,14 @@ exports.save = async (req, res, next) => {
 
 exports.unsave = async (req, res, next) => {
   try {
-    return res.json({ message: "UnSaved" });
+   const user = req.user
+   const {postID} = req.body
+   const post = await PostModel.findOne({ _id: postID });
+   const removedSave = await SaveModel.findOneAndDelete({user:user._id , post : postID})
+   if(!removedSave){
+     //! Error Message
+   }
+   return res.redirect(`/pages/${post.user}`)
   } catch (err) {
     next(err);
   }
