@@ -12,4 +12,6 @@ router
   .post(auth, upload.single("media"),controller.createPost);
 router.route("/like").post(auth,controller.like)
 router.route("/dislike").post(auth,controller.dislike)
+router.route("/save").post(auth,controller.save)
+router.route("/unsave").post(auth,controller.unsave)
 module.exports = router;

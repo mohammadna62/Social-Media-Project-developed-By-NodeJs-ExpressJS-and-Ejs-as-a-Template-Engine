@@ -92,3 +92,19 @@ exports.dislike = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.save = async(req , res, next)=>{
+  try{
+     return res.json({message : "Saved"})
+  }catch(err){
+    next(err)
+  }
+}
+
+exports.unsave = async(req , res, next)=>{
+  try{
+     return res.json({message : "UnSaved"})
+  }catch(err){
+    next(err)
+  }
+}
