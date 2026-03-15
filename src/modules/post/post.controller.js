@@ -75,7 +75,19 @@ exports.like = async (req, res, next) => {
 };
 exports.dislike = async (req, res, next) => {
   try {
-    return res.json({message:"DisLike"});
+    const user = req.user;
+    const { postID } = req.body;
+    
+    const post = await PostModel.findOne({ _id: postID });
+    const like = await LikeModel.findOne({ user: user._id, post: postID });
+    if(!like){
+      return res.redirect(`/pages/${post.user}`)
+    }
+    //await LikeModel.findOneAndDelete({user: user._id, post: postID }) //* is same with below
+    await LikeModel.findOneAndDelete({_id:like._id })
+    
+    return  res.redirect(`/pages/${post.user}`)
+
   } catch (err) {
     next(err);
   }
