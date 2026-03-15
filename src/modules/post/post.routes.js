@@ -14,4 +14,5 @@ router.route("/like").post(auth,controller.like)
 router.route("/dislike").post(auth,controller.dislike)
 router.route("/save").post(auth,controller.save)
 router.route("/unsave").post(auth,controller.unsave)
+router.route("/saves").get(auth,controller.showSavesView)
 module.exports = router;

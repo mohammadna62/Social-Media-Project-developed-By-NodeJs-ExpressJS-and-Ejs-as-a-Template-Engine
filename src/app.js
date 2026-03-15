@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser")
 
 const { setHeaders } = require("./middlewares/headers");
 const { errorHandler } = require("./middlewares/errorHandler");
+const homeRoutes = require("./modules/home/home.routes");
 const authRoutes = require("./modules/auth/auth.routes");
 const postsRoutes = require("./modules/post/post.routes");
 const pageRoutes = require("./modules/page/page.routes");
@@ -42,9 +43,8 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 //! Routes
-app.get("/", (req, res) => {
-  return res.render("index");
-});
+
+app.use("/", homeRoutes);
 app.use("/auth", authRoutes);
 app.use("/posts", postsRoutes);
 app.use("/pages", pageRoutes);
