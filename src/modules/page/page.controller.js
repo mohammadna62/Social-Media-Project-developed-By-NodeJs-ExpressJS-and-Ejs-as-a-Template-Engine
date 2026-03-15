@@ -59,22 +59,18 @@ exports.getPage = async (req, res, next) => {
     const saves = await SaveModel.find({ user: user._id })
       .populate("user", "_id")
       .populate("post", "_id");
-    let postWithLikes = [];
+ 
 
     posts.forEach((post) => {
       if (likes.length) {
         likes.forEach((like) => {
           if (like.post._id.toString() === post._id.toString()) {
-            postWithLikes.push({ ...post, hasLike: true });
-          } else {
-            postWithLikes.push({ ...post });
+           post.hasLike = true
           }
         });
-      } else {
-        postWithLikes = [...posts];
-      }
+      } 
     });
-    postWithLikes.forEach((post) => {
+    posts.forEach((post) => {
       if (saves.length) {
         saves.forEach((save) => {
           if (save.post._id.toString() === post._id.toString()) {
@@ -91,7 +87,7 @@ exports.getPage = async (req, res, next) => {
       followings,
       page,
       own,
-      posts: postWithLikes,
+      posts,
     });
   } catch (err) {
     next(err);
