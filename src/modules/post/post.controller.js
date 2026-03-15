@@ -75,7 +75,7 @@ exports.like = async (req, res, next) => {
 };
 exports.dislike = async (req, res, next) => {
   try {
-    return res.render("post/upload");
+    return res.json({message:"DisLike"});
   } catch (err) {
     next(err);
   }
