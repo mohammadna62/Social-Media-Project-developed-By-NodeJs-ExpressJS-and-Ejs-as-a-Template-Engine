@@ -3,6 +3,7 @@ const FollowModel = require("./../../models/Follow");
 const UserModel = require("./../../models/User");
 const PostModel = require("./../../models/Post");
 const LikeModel = require("./../../models/Like");
+const SaveModel = require("./../../models/Save");
 
 exports.getPage = async (req, res, next) => {
   try {
@@ -55,6 +56,9 @@ exports.getPage = async (req, res, next) => {
     const likes = await LikeModel.find({ user: user._id })
       .populate("user", "_id")
       .populate("post", "_id");
+    const saves = await SaveModel.find({ user: user._id })
+      .populate("user", "_id")
+      .populate("post", "_id");
     let postWithLikes = [];
 
     posts.forEach((post) => {
@@ -66,11 +70,19 @@ exports.getPage = async (req, res, next) => {
             postWithLikes.push({ ...post });
           }
         });
-      }else{
-        postWithLikes = [...posts]
+      } else {
+        postWithLikes = [...posts];
       }
     });
-
+    postWithLikes.forEach((post) => {
+      if (saves.length) {
+        saves.forEach((save) => {
+          if (save.post._id.toString() === post._id.toString()) {
+            post.isSaved = true;
+          }
+        });
+      }
+    });
     return res.render("page/index", {
       followed: Boolean(followed),
       pageID,
