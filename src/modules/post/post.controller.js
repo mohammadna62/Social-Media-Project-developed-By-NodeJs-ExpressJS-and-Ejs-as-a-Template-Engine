@@ -1,5 +1,6 @@
 const PostModel = require("./../../models/Post");
 const LikeModel = require("./../../models/Like");
+const SaveModel = require("./../../models/Save");
 const { createPostValidator } = require("./post.validators");
 const hasAccessToPage = require("./../../utils/hasAccessToPage");
 
@@ -77,34 +78,53 @@ exports.dislike = async (req, res, next) => {
   try {
     const user = req.user;
     const { postID } = req.body;
-    
+
     const post = await PostModel.findOne({ _id: postID });
     const like = await LikeModel.findOne({ user: user._id, post: postID });
-    if(!like){
-      return res.redirect(`/pages/${post.user}`)
+    if (!like) {
+      return res.redirect(`/pages/${post.user}`);
     }
     //await LikeModel.findOneAndDelete({user: user._id, post: postID }) //* is same with below
-    await LikeModel.findOneAndDelete({_id:like._id })
-    
-    return  res.redirect(`/pages/${post.user}`)
+    await LikeModel.findOneAndDelete({ _id: like._id });
 
+    return res.redirect(`/pages/${post.user}`);
   } catch (err) {
     next(err);
   }
 };
 
-exports.save = async(req , res, next)=>{
-  try{
-     return res.json({message : "Saved"})
-  }catch(err){
-    next(err)
-  }
-}
+exports.save = async (req, res, next) => {
+  try {
+    const user = req.user;
+    const { postID } = req.body;
+    const post = await PostModel.findOne({ _id: postID });
+    if (!post) {
+      //! Error
+    }
+    const hasAccess = await hasAccessToPage(user._id, post.user.toString());
+    if (!hasAccess) {
+      //! Error Message
+    }
 
-exports.unsave = async(req , res, next)=>{
-  try{
-     return res.json({message : "UnSaved"})
-  }catch(err){
-    next(err)
+    const existingSave = await SaveModel.findOne({
+      user: user._id,
+      post: postID,
+    });
+
+    if (existingSave) {
+      return res.redirect(`/pages/${post.user}`); // /page/:pageID ...
+    }
+    await SaveModel.create({ post: postID, user: user._id });
+    return res.redirect(`/pages/${post.user}`);
+  } catch (err) {
+    next(err);
   }
-}
+};
+
+exports.unsave = async (req, res, next) => {
+  try {
+    return res.json({ message: "UnSaved" });
+  } catch (err) {
+    next(err);
+  }
+};

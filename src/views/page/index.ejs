@@ -281,6 +281,7 @@
                             </svg>
                           </button>
                           <form action="/posts/save" method="post">
+                            <input type="hidden" name="postID" value="<%= post._id %>">
                             <button class="max-w-max">
                               <svg fill="none"
                               viewBox="0 0 24 24"
