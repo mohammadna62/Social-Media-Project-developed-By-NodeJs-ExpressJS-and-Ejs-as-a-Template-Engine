@@ -123,23 +123,43 @@ exports.save = async (req, res, next) => {
 
 exports.unsave = async (req, res, next) => {
   try {
-   const user = req.user
-   const {postID} = req.body
-   const post = await PostModel.findOne({ _id: postID });
-   const removedSave = await SaveModel.findOneAndDelete({user:user._id , post : postID})
-   if(!removedSave){
-     //! Error Message
-   }
-   return res.redirect(`/pages/${post.user}`)
+    const user = req.user;
+    const { postID } = req.body;
+    const post = await PostModel.findOne({ _id: postID });
+    const removedSave = await SaveModel.findOneAndDelete({
+      user: user._id,
+      post: postID,
+    });
+    if (!removedSave) {
+      //! Error Message
+    }
+    return res.redirect(`/pages/${post.user}`);
   } catch (err) {
     next(err);
   }
 };
 
-exports.showSavesView = async (req, res , next)=>{
-  try{
-    //Codes
-  }catch(err){
-    next(err)
+exports.showSavesView = async (req, res, next) => {
+  try {
+    const user = req.user;
+    const saves = await SaveModel.find({ user: user._id })
+      .populate("post")
+      .lean();
+    const likes = await LikeModel.find({ user: user._id })
+      .populate("post")
+      .lean();
+    saves.forEach((item) => {
+      likes.forEach((like) => {
+        if (item.post._id.toString() === like.post._id.toString()) {
+          item.post.hasLike = true;
+        }
+      });
+    });
+
+    return res.render("post/saves", {
+      posts: saves,
+    });
+  } catch (err) {
+    next(err);
   }
-}
+};
