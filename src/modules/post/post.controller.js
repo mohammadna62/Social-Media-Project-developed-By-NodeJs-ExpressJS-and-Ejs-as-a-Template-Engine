@@ -3,6 +3,7 @@ const LikeModel = require("./../../models/Like");
 const SaveModel = require("./../../models/Save");
 const { createPostValidator } = require("./post.validators");
 const hasAccessToPage = require("./../../utils/hasAccessToPage");
+const { getUserInfo } = require("../../utils/helpers");
 
 exports.showPostUploadView = async (req, res) => {
   return res.render("post/upload");
@@ -155,9 +156,10 @@ exports.showSavesView = async (req, res, next) => {
         }
       });
     });
-
+      const userInfo = await getUserInfo(user._id)
     return res.render("post/saves", {
       posts: saves,
+      user:userInfo,
     });
   } catch (err) {
     next(err);

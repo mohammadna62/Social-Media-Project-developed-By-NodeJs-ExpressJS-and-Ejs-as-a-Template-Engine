@@ -1,10 +1,9 @@
-const express = require("express")
-const controller  = require("./home.controller")
+const express = require("express");
+const controller = require("./home.controller");
+const auth = require("./../../middlewares/auth");
 
-const router = express.Router()
+const router = express.Router();
 
-router.get("/", controller.showHomeView);
+router.get("/", auth, controller.showHomeView);
 
-
-
-module.exports = router
+module.exports = router;
