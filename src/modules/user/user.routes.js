@@ -1,7 +1,7 @@
 const express = require("express")
 const controller = require("./user.controler")
-const auth = require("./../../middlewares/auth")
-const {multerStorage} = require("./../../middlewares/uploaderConfigs")
+const auth = require("../../middlewares/auth")
+const {multerStorage} = require("../../middlewares/uploaderConfigs")
  router = new  express.Router()
 const upload =multerStorage("public/images/profiles")
 

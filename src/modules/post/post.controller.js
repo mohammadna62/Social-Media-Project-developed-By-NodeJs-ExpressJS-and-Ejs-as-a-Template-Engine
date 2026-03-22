@@ -216,8 +216,7 @@ exports.addComment = async (req, res, next) => {
   try {
     const user = req.user;
     const { content, postID } = req.body;
-    const { owner } = req.params;
-    console.log(owner);
+   
 
     const post = await PostModel.findOne({ _id: postID });
     /*  if(!user.isVerified){
