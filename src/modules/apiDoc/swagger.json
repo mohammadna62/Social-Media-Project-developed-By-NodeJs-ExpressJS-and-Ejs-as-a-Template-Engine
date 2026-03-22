@@ -1,1 +1,33 @@
-{}
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "<Social Media/>",
+    "description": "Description For Social Media Project",
+    "version": "1.0.0"
+  },
+  "components":[],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "All Routes about user authentication"
+    },
+    {
+      "name": "Post",
+      "description": "All Routes for manipulate posts"
+    },
+    {
+      "name": "Comment",
+      "description": ""
+    },
+    {
+      "name": "Page",
+      "description": ""
+    
+    },
+    {
+      "name": "User",
+      "description": ""
+    }
+  ],
+  "paths":[]
+}
