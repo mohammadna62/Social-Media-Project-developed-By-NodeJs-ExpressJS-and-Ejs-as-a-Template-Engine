@@ -287,15 +287,24 @@
               class="flex items-center gap-3"
             >
               <div>
+                <%if(item.post.user.profilePicture){%>
+              <img
+                src="http://localhost:4001/<%= item.post.user.profilePicture%>"
+                class="w-8 rounded-full"
+                alt="profile cover"
+              />
+              <%}else{%>
                 <img
-                  src="/images/profile-1.jpg"
-                  alt="Profile card"
-                  class="w-8 rounded-full"
-                />
+                src="http://localhost:4001/images/profiles/default-user.png"
+                 class="w-8 rounded-full"
+                alt="profile cover"
+              />
+                <%}%>
+                
               </div>
               <div>
                 <p class="font-Poppins-Medium text-sm twitter-name">
-                  Lena Mc'Queen
+                  <%= item.post.user.username%>
                 </p>
                 <p class="tweet-time">
                   <span>Dubai</span>
@@ -495,7 +504,7 @@
             <!-- User Infos (name, description) -->
             <div class="mt-1 text-sm gap-1">
               <span>
-                <strong> Lena Mc'Queen </strong>
+                <strong> <%= item.post.user.username%> </strong>
               </span>
               <p class="text-gray-700">
                 Lorem ipsum dolor sit amet consectetur.

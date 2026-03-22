@@ -144,11 +144,19 @@ exports.showSavesView = async (req, res, next) => {
   try {
     const user = req.user;
     const saves = await SaveModel.find({ user: user._id })
-      .populate("post")
+      .populate({
+        path: "post",
+        populate: {
+          path: "user",
+          model: "User",
+        },
+      })
       .lean();
+
     const likes = await LikeModel.find({ user: user._id })
       .populate("post")
       .lean();
+
     saves.forEach((item) => {
       likes.forEach((like) => {
         if (item.post._id.toString() === like.post._id.toString()) {
@@ -156,10 +164,10 @@ exports.showSavesView = async (req, res, next) => {
         }
       });
     });
-      const userInfo = await getUserInfo(user._id)
+    const userInfo = await getUserInfo(user._id);
     return res.render("post/saves", {
       posts: saves,
-      user:userInfo,
+      user: userInfo,
     });
   } catch (err) {
     next(err);
