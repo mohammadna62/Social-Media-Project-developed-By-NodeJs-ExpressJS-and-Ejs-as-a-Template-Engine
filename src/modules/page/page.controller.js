@@ -6,7 +6,6 @@ const LikeModel = require("./../../models/Like");
 const SaveModel = require("./../../models/Save");
 const CommentModel = require("./../../models/Comment");
 
-
 exports.getPage = async (req, res, next) => {
   try {
     const user = req.user;
@@ -33,6 +32,7 @@ exports.getPage = async (req, res, next) => {
         hasAccess: false,
         page,
         posts: [],
+        comments:[],
       });
     }
 
@@ -62,17 +62,17 @@ exports.getPage = async (req, res, next) => {
       .populate("user", "_id")
       .populate("post", "_id");
 
- 
-          
-          
+    const comments = await CommentModel.find({});
+
+    
     posts.forEach((post) => {
       if (likes.length) {
         likes.forEach((like) => {
           if (like.post._id.toString() === post._id.toString()) {
-           post.hasLike = true
+            post.hasLike = true;
           }
         });
-      } 
+      }
     });
     posts.forEach((post) => {
       if (saves.length) {
@@ -83,6 +83,9 @@ exports.getPage = async (req, res, next) => {
         });
       }
     });
+
+
+
     return res.render("page/index", {
       followed: Boolean(followed),
       pageID,
@@ -92,6 +95,7 @@ exports.getPage = async (req, res, next) => {
       page,
       own,
       posts,
+      comments,
     });
   } catch (err) {
     next(err);

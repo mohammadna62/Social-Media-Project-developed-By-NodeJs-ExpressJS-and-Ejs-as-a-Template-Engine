@@ -844,7 +844,10 @@
           <p class="text-sm text-gray-600 my-3">
           Comments</p>
           </div>
-            
+            <% posts.forEach((post)=>{%>
+              <% if (comments.length) {%>
+               <% comments.forEach((comment) => {%>
+                 <% if(comment.post._id === post._id){%>
           <div class="border bg-gray-100 p-5 my-3 rounded-md shadow-sm">
             <div class="flex items-center gap-2 mb-1">
               <img
@@ -853,13 +856,19 @@
                 alt="Profile Image"
               />
               <div>
-                <span class="text-sm text-gray-600"> Amin Saeedi </span>
+                <span class="text-sm text-gray-600"> <%= post.user.username %> </span>
                 <p class="text-xs text-gray-500">20 April 2024</p>
               </div>
             </div>
             <div class="ml-6 pl-4 mt-4">
-              <q> I love this post :)) </q>
+              
+              <q> <%=comment.content %> </q>
+              
             </div>
+                  <%}%>
+               <%})%>
+             <%}%>
+            <%})%>
             <div class="mt-4 flex-between">
               <div class="flex items-center gap-1">
                 <button class="flex items-center gap-1">
