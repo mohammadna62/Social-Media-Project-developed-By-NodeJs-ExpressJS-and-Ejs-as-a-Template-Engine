@@ -4,6 +4,8 @@ const UserModel = require("./../../models/User");
 const PostModel = require("./../../models/Post");
 const LikeModel = require("./../../models/Like");
 const SaveModel = require("./../../models/Save");
+const CommentModel = require("./../../models/Comment");
+
 
 exports.getPage = async (req, res, next) => {
   try {
@@ -59,8 +61,10 @@ exports.getPage = async (req, res, next) => {
     const saves = await SaveModel.find({ user: user._id })
       .populate("user", "_id")
       .populate("post", "_id");
- 
 
+ 
+          
+          
     posts.forEach((post) => {
       if (likes.length) {
         likes.forEach((like) => {

@@ -15,4 +15,6 @@ router.route("/dislike").post(auth,controller.dislike)
 router.route("/save").post(auth,controller.save)
 router.route("/unsave").post(auth,controller.unsave)
 router.route("/saves").get(auth,controller.showSavesView)
+router.route("/:postID/remove").post(auth,controller.removePost)
+router.route("/new-comment").post(auth,controller.addComment)
 module.exports = router;

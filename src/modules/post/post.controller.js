@@ -1,9 +1,13 @@
 const PostModel = require("./../../models/Post");
 const LikeModel = require("./../../models/Like");
 const SaveModel = require("./../../models/Save");
+const CommentModel = require("./../../models/Comment");
 const { createPostValidator } = require("./post.validators");
 const hasAccessToPage = require("./../../utils/hasAccessToPage");
 const { getUserInfo } = require("../../utils/helpers");
+
+const path = require("path");
+const fs = require("fs");
 
 exports.showPostUploadView = async (req, res) => {
   return res.render("post/upload");
@@ -169,6 +173,70 @@ exports.showSavesView = async (req, res, next) => {
       posts: saves,
       user: userInfo,
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.removePost = async (req, res, next) => {
+  try {
+    const user = req.user;
+    const { postID } = req.params;
+    const post = await PostModel.findOne({ _id: postID });
+    if (!post || post.user.toString() !== user._id.toString()) {
+      req.flash("error", "You can not remove this post !!");
+      return res.redirect(`/pages/${post.user}`);
+    }
+    const mediaPath = path.join(
+      __dirname,
+      "..",
+      "..",
+      "..",
+      "public",
+      "images",
+      "posts",
+      post.media.filename,
+    );
+    fs.unlinkSync(mediaPath, (err) => {
+      if (err) {
+        next(err);
+      }
+    });
+    await LikeModel.deleteMany({ post: postID });
+    await SaveModel.deleteMany({ post: postID });
+    await CommentModel.deleteMany({ post: postID });
+    await PostModel.findByIdAndDelete(postID);
+    req.flash("success", "Post removed successfully");
+    return res.redirect(`/pages/${post.user}`);
+  } catch (err) {
+    next(err);
+  }
+};
+exports.addComment = async (req, res, next) => {
+  try {
+    const user = req.user;
+    const { content, postID } = req.body;
+    const { owner } = req.params;
+    console.log(owner);
+
+    const post = await PostModel.findOne({ _id: postID });
+    /*  if(!user.isVerified){
+          req.flash("error","First Login submit comment")
+          return res.redirect(`/pages/${post.user}`)
+    } */
+    if (!post) {
+      //! Error
+    }
+    //* ParentID - developed this Item in online learning Project
+
+    const comment = new CommentModel({
+      content,
+      post: postID,
+      user: user._id,
+    });
+    comment.save();
+    req.flash("success", "Comment submit successfully");
+    return res.redirect(`/pages/${post.user}`);
   } catch (err) {
     next(err);
   }
