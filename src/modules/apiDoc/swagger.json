@@ -1,11 +1,21 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "< Social Media ❤️ />",
+    "title": "<Social Media ❤️ />",
     "description": "Description For Social Media Project",
     "version": "1.0.0"
   },
-  "components": [],
+  "components": {
+    "securitySchemes": {
+      "Authorization": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "scheme": "bearer",
+        "in": "header",
+        "description": "User token form authorization: **Bearer [user_token]**"
+      }
+    }
+  },
   "tags": [
     {
       "name": "Auth",
@@ -39,10 +49,10 @@
               "schema": {
                 "type": "object",
                 "example": {
-                  "email": "mmd@gmail.com",
-                  "username": "mmd.na",
+                  "email": "mohammad@gmail.com",
+                  "username": "mo.na",
                   "name": "Mohammad Naghavi",
-                  "password": "mmd2112"
+                  "password": "mohammad4550"
                 }
               }
             }
@@ -84,6 +94,11 @@
         "requestBody": {
           "content": {}
         },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [
           {
             "name": "pageID",

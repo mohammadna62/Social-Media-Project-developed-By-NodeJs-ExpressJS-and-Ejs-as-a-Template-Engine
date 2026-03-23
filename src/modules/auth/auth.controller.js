@@ -123,6 +123,44 @@ exports.login = async (req, res, next) => {
 
     return res.redirect("/auth/login");
   } catch (err) {
-    next(err)
+    next(err);
+  }
+};
+
+exports.refreshToken = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+
+    const userID = await RefreshTokenModel.verifyToken(refreshToken);
+    if (!userID) {
+      //! Error Codes
+    }
+
+    await RefreshTokenModel.findOneAndDelete({ token: refreshToken });
+
+    const user = await UserModel.findOne({ _id: userID });
+    if (!user) {
+      //! Error Codes
+    }
+
+    const accessToken = jwt.sign({ userID: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "30day",
+    });
+
+    const newRefreshToken = await RefreshTokenModel.createToken(user);
+
+    res.cookie("access-token", accessToken, {
+      maxAge: 900_000,
+      httpOnly: true,
+    });
+
+    res.cookie("refresh-token", newRefreshToken, {
+      maxAge: 900_000,
+      httpOnly: true,
+    });
+
+    //* Success message
+  } catch (err) {
+    next(err);
   }
 };
