@@ -1,19 +1,19 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "<Social Media/>",
+    "title": "< Social Media ❤️ />",
     "description": "Description For Social Media Project",
     "version": "1.0.0"
   },
-  "components":[],
+  "components": [],
   "tags": [
     {
       "name": "Auth",
-      "description": "All Routes about user authentication"
+      "description": "All routes about user auth"
     },
     {
       "name": "Post",
-      "description": "All Routes for manipulate posts"
+      "description": "all routes for manipulate posts"
     },
     {
       "name": "Comment",
@@ -22,12 +22,82 @@
     {
       "name": "Page",
       "description": ""
-    
     },
     {
       "name": "User",
       "description": ""
     }
   ],
-  "paths":[]
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register User",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "mmd@gmail.com",
+                  "username": "mmd.na",
+                  "name": "Mohammad Naghavi",
+                  "password": "mmd2112"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "successfully register"
+          },
+          "400": {
+            "description": "request body is not valid"
+          }
+        }
+      }
+    },
+    "/pages/{pageID}": {
+      "get": {
+        "tags": ["Page"],
+        "summary": "Get page data",
+        "parameters": [
+          {
+            "name": "pageID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully response"
+          }
+        }
+      }
+    },
+    "/pages/{pageID}/follow": {
+      "post": {
+        "tags": ["Page"],
+        "summary": "Follow page",
+        "requestBody": {
+          "content": {}
+        },
+        "parameters": [
+          {
+            "name": "pageID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully response"
+          }
+        }
+      }
+    }
+  }
 }
