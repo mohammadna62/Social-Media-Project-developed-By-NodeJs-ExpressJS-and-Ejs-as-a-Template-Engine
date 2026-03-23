@@ -164,3 +164,25 @@ exports.refreshToken = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.showForgetPasswordView = async (req, res, next) => {
+return res.render("auth/forget-password")
+};
+
+exports.showResetPasswordView = async (req, res, next) => {
+ return res.render("auth/reset-password")
+};
+
+exports.forgetPassword = async (req, res, next) => {
+  try {
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+  } catch (err) {
+    next(err);
+  }
+};
