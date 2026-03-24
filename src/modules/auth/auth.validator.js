@@ -10,25 +10,30 @@ exports.registerValidationSchema = yup.object({
     .min(3, "Username must be at least 3 chars long")
     .max(20, "Username must be at last 20 chars long")
     .required("Username is Requierd"),
-    name: yup
+  name: yup
     .string()
     .min(3, "Name must be at least 3 chars long")
     .max(50, " Name Can Not be more than 50 chars")
     .required("Name is Requierd"),
-    password: yup
+  password: yup
     .string()
     .min(8, "Password must be at least 8 chars long")
     .required("Name is Requierd"),
 });
 
-
 exports.loginValidationSchema = yup.object({
-  email:yup
+  email: yup
     .string()
     .email("Please Enter A valid Email")
-    .required("Email is Requierd"),
-    password: yup
+    .required("Email is Required"),
+  password: yup
     .string()
     .min(8, "Password must be at least 8 chars long")
-    .required("Name is Requierd"),
-})
+    .required("Name is Required"),
+});
+exports.forgetPasswordValidationSchema = yup.object({
+  email: yup
+    .string()
+    .email("Please Enter A valid Email")
+    .required("Email is Required"),
+});

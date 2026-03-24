@@ -1,12 +1,16 @@
 const { errorResponse, successResponse } = require("../../utils/responses");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
+const nodeMailer = require("nodemailer");
 const UserModel = require("./../../models/User");
 const {
   registerValidationSchema,
   loginValidationSchema,
+  forgetPasswordValidationSchema,
 } = require("./auth.validator");
 const RefreshTokenModel = require("./../../models/RefreshToken");
+const ResetPasswordModel = require("./../../models/ResetPassword");
 const { param } = require("./auth.routes");
 
 exports.showRegisterView = async (req, res) => {
@@ -166,15 +170,51 @@ exports.refreshToken = async (req, res, next) => {
 };
 
 exports.showForgetPasswordView = async (req, res, next) => {
-return res.render("auth/forget-password")
+  return res.render("auth/forget-password");
 };
 
 exports.showResetPasswordView = async (req, res, next) => {
- return res.render("auth/reset-password")
+  return res.render("auth/reset-password");
 };
 
 exports.forgetPassword = async (req, res, next) => {
   try {
+    const { email } = req.body;
+    await forgetPasswordValidationSchema.validate(
+      { email },
+      { abortEarly: true },
+    );
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      //! Error
+    }
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpireTime = Date.now() + 1000 * 60 * 60;
+    const resetPassword = new ResetPasswordModel({
+      user: user._id,
+      token: resetToken,
+      tokenExpireTime: resetTokenExpireTime,
+    });
+    resetPassword.save();
+    const transporter = nodeMailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+      },
+    });
+    const mailOption = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Reset Password Link For Your Social Account ",
+      html: `
+        <h2>Hi, Dear ${user.name}</h2>
+          <a href="http://localhost:${process.env.PORT}/auth/reset-password/${resetToken}"><Reset Password Link/a>
+      `,
+    };
+    transporter.sendMail(mailOption);
+    req.flash("success", "Password reset email sent");
+    return res.redirect("/auth/forget-password");
   } catch (err) {
     next(err);
   }
