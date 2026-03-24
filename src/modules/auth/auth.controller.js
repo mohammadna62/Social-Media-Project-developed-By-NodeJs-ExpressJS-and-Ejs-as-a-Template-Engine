@@ -8,6 +8,7 @@ const {
   registerValidationSchema,
   loginValidationSchema,
   forgetPasswordValidationSchema,
+  resetPasswordValidationSchema,
 } = require("./auth.validator");
 const RefreshTokenModel = require("./../../models/RefreshToken");
 const ResetPasswordModel = require("./../../models/ResetPassword");
@@ -222,6 +223,26 @@ exports.forgetPassword = async (req, res, next) => {
 
 exports.resetPassword = async (req, res, next) => {
   try {
+    const {token , password} = req.body
+    await resetPasswordValidationSchema.validate(
+      { token , password },
+      { abortEarly: true },
+    );
+    const resetPassword = await ResetPasswordModel.findOne({token , tokenExpireTime:{$gt:Date.now()},})// gt = greater than
+    if(!resetPassword){
+      req.flash("error","Invalid or expired token !!")
+      return res.redirect("/auth/reset-password")
+    }
+    const user = await UserModel.findOne({_id :resetPassword.user})
+    if(!user){
+      req.flash("error","User Not Found !!")
+      return res.redirect("/auth/reset-password")
+    }
+    const hashedPassword = await bcrypt.hash(password,10)
+    await UserModel.findOneAndUpdate({_id:user._id},{password:hashedPassword})
+    await ResetPasswordModel.findOneAndDelete({_id : resetPassword._id})
+    req.flash("success","Password Reset Successfully !!")
+    return res.redirect("/auth/login")
   } catch (err) {
     next(err);
   }

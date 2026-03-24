@@ -51,11 +51,11 @@
               id="profileButton"
               class="w-full h-full bg-transparent border-none"
             >
-              <img
-                src="/images/profile-8.jpg"
-                class="object-cover"
-                alt="profile cover"
-              />
+               <%if(page.profilePicture){%>
+                <img src="http://localhost:4001/<%= page.profilePicture %>" class="object-cover" alt="" />
+                <%}else{%>
+                    <img src="http://localhost:4001/images/profiles/default-user.png" class="object-cover" alt="" />
+                  <%}%>
             </button>
           </div>
         </div>
@@ -74,7 +74,12 @@
 
             <!-- Profile Image -->
             <span class="profile-pic-card">
-              <img src="http://localhost:4001/<%= page.profilePicture %>" class="profile-pic" alt="" />
+              <%if(page.profilePicture){%>
+                <img src="http://localhost:4001/<%= page.profilePicture %>" class="profile-pic" alt="" />
+                <%}else{%>
+                    <img src="http://localhost:4001/images/profiles/default-user.png" class="profile-pic" alt="" />
+                  <%}%>
+              
             </span>
           </header>
           <main class="profile-main">
@@ -188,11 +193,12 @@
                 <article class="profile-feed-card">
                   <div>
                     <header>
-                      <img
-                        src="http://localhost:4001/<%= post.user.profilePicture %>"
-                        alt="profile picture"
-                        class="feed-profile-picture"
-                      />
+                      <%if(page.profilePicture){%>
+                <img src="http://localhost:4001/<%= page.profilePicture %>" class="feed-profile-picture" alt="" />
+                <%}else{%>
+                    <img src="http://localhost:4001/images/profiles/default-user.png" class="feed-profile-picture" alt="" />
+                  <%}%>
+                     
                     </header>
                   </div>
                   <div class="w-full">
