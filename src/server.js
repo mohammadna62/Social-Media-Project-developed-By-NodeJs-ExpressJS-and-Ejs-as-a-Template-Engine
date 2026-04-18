@@ -40,6 +40,6 @@ async function run() {
   await connectToDB();
 }
 
-//! notie : nodemon package run directly server.js from packahe.Json and "main": "./src/server.js" in package.json,
+//! note : nodemon package run directly server.js from package.Json and "main": "./src/server.js" in package.json,
 
 run();
